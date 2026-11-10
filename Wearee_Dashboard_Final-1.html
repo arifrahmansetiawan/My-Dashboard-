@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050506">
+<meta name="description" content="Wearee, dashboard harian pribadi: kesehatan, fokus, catatan, dan alat kreatif.">
+<title>Wearee — Dashboard Pribadi</title>
+<style>
+:root{color-scheme:dark;--tx:#f5f5f7;--mu:#a0a0aa;--ln:rgba(255,255,255,.1);--ac:#c9d6ff;--ok:#4ade80;--bad:#ff8f86;--r:20px;--sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",Roboto,system-ui,sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;min-height:100dvh;background:#050506;color:var(--tx);font:14px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+body:before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(60vmax 40vmax at 95% -10%,rgba(110,130,255,.2),transparent 60%),radial-gradient(50vmax 40vmax at -5% 105%,rgba(255,130,190,.12),transparent 60%),radial-gradient(40vmax 30vmax at 55% 60%,rgba(80,220,200,.06),transparent 60%)}
+button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.glass{background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:1px solid var(--ln);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 24px 50px -24px rgba(0,0,0,.7);-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%)}
+.app{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:100vh;min-height:100dvh}
+.sidebar{position:sticky;top:12px;height:calc(100dvh - 24px);margin:12px 0 12px 12px;border-radius:24px;padding:18px 12px;display:flex;flex-direction:column;gap:18px;z-index:30}
+.brand{display:flex;align-items:center;gap:10px;padding:2px 8px;font-weight:700;font-size:18px;letter-spacing:-.03em}
+.brand i{width:22px;height:22px;border-radius:7px;background:linear-gradient(145deg,#fff,#8fa3d8);display:block}
+.search{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid var(--ln)}
+.search input{flex:1;min-width:0;background:none;border:0;outline:0;font-size:13px}.search input::placeholder{color:var(--mu)}
+.search kbd{font:11px var(--mono);color:var(--mu);border:1px solid var(--ln);border-radius:6px;padding:1px 6px}
+.grp{font-size:12px;color:var(--mu);padding:0 10px 6px}
+.nav{display:grid;gap:3px}
+.nav button{display:flex;align-items:center;gap:11px;border:1px solid transparent;background:none;border-radius:12px;padding:10px;color:#b4b4bd;text-align:left;font-size:13.5px;transition:background .2s,color .2s}
+.nav button:hover{background:rgba(255,255,255,.05);color:var(--tx)}
+.nav button[aria-current=page]{background:rgba(255,255,255,.1);border-color:var(--ln);color:var(--tx);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.ico{width:18px;text-align:center;color:var(--ac)}
+.side-foot{margin-top:auto;padding:0 10px;color:var(--mu);font-size:12px}
+main{min-width:0;padding:22px clamp(16px,3.5vw,48px) 56px;max-width:1400px;width:100%;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px}
+.crumb{color:var(--mu);font-size:13px}.crumb b{color:var(--tx);font-weight:500}
+.pill,.btn{border:1px solid var(--ln);background:rgba(255,255,255,.07);border-radius:12px;padding:9px 14px;font-size:13px;transition:background .2s,filter .2s}
+.pill:hover,.btn:hover{background:rgba(255,255,255,.12)}
+.btn.primary{background:linear-gradient(160deg,#fff,#c3cde6);color:#0b0d14;border-color:rgba(255,255,255,.6);font-weight:600;box-shadow:inset 0 1px 0 #fff,0 6px 18px rgba(0,0,0,.25)}
+.btn.primary:hover{filter:brightness(1.05)}.btn.danger{color:var(--bad)}
+.menu{display:none}
+h1,h2{font-weight:500;letter-spacing:-.045em;margin:0;line-height:1.05}
+h1{font-size:clamp(32px,5vw,46px)}h2{font-size:clamp(26px,4vw,34px)}h1 span{color:var(--mu)}
+.lead{color:var(--mu);margin:10px 0 24px;max-width:640px}
+.section{display:none}.section.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px}
+.card{border-radius:var(--r);padding:20px;min-width:0}
+.s3{grid-column:span 3}.s5{grid-column:span 5}.s6{grid-column:span 6}.s7{grid-column:span 7}.s12{grid-column:span 12}
+.ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px}
+.ct{color:var(--mu);font-size:13px}.cs{color:var(--mu);font:12px var(--mono)}
+.big{font-size:34px;font-weight:500;letter-spacing:-.05em;line-height:1.1}.big small{font-size:14px;color:var(--mu);letter-spacing:0;font-weight:400}
+.note{color:var(--mu);font:12px var(--mono);margin-top:6px}.up{color:var(--ok)}.down{color:var(--bad)}
+.bar{height:5px;border-radius:9px;background:rgba(255,255,255,.1);overflow:hidden;margin-top:14px}.bar span{display:block;height:100%;width:0;border-radius:9px;background:linear-gradient(90deg,#7f95d6,#e6ecff);transition:width .35s}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.field{width:100%;border-radius:12px;border:1px solid var(--ln);background:rgba(0,0,0,.28);padding:10px 12px;outline:0}.field:focus{border-color:rgba(201,214,255,.7);box-shadow:0 0 0 3px rgba(201,214,255,.12)}
+label.lb{display:block;color:var(--mu);font-size:13px;margin:12px 0 6px}
+.moods{display:flex;gap:8px;flex-wrap:wrap}.mood{width:42px;height:42px;border-radius:13px;border:1px solid var(--ln);background:rgba(255,255,255,.06);font-size:19px}.mood[aria-pressed=true]{border-color:var(--ac);background:rgba(201,214,255,.16)}
+.chart{height:150px;display:flex;align-items:flex-end;gap:10px;margin-top:6px}
+.chart div{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end;color:var(--mu);font-size:12px}
+.chart i{display:block;width:100%;border-radius:8px 8px 4px 4px;background:rgba(255,255,255,.14);min-height:4px}.chart .today i{background:linear-gradient(180deg,#e6ecff,#7f95d6)}.chart .none i{background:none;border:1px dashed var(--ln)}
+.checks{display:grid;gap:8px}.ck{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid transparent}
+.ck label{display:flex;align-items:center;gap:10px;flex:1;min-width:0;cursor:pointer}.ck input{accent-color:#c9d6ff;width:17px;height:17px;flex:none}.ck.done span{color:var(--mu);text-decoration:line-through}
+.ck button{margin-left:auto;padding:2px 10px}
+.tools{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.tool{display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;border:1px solid var(--ln);background:rgba(255,255,255,.04);text-align:left}.tool:hover{background:rgba(255,255,255,.09)}.tool small{display:block;color:var(--mu)}
+.tl{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:14px}
+.stage{position:relative;height:min(72dvh,760px);min-height:420px;border-radius:var(--r);overflow:hidden;background:rgba(0,0,0,.55);border:1px solid var(--ln);user-select:none;-webkit-user-select:none;touch-action:pan-y}
+.stage.locked,.stage.full{touch-action:none}
+.ph{position:absolute;inset:0;display:grid;place-content:center;text-align:center;color:var(--mu);padding:28px;pointer-events:none}.ph b{color:var(--tx);font-weight:500;font-size:16px;margin-bottom:6px}
+.stage.loaded .ph{display:none}
+.timg{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;-webkit-user-drag:none;user-select:none}
+.stage.loaded .timg{display:block}
+.stage.full{position:fixed;inset:0;z-index:100;height:100dvh;border:0;border-radius:0;background:#000}
+.xfull{display:none;position:absolute;right:14px;top:max(14px,env(safe-area-inset-top));z-index:3}.stage.full .xfull{display:block}
+.side{display:flex;flex-direction:column;gap:12px}.ctl{border-radius:16px;padding:14px}.ctl h3{margin:0 0 10px;font-size:13px;font-weight:600}.ctl p{margin:10px 0 0;color:var(--mu);font-size:12.5px}
+.ctl input[type=range]{width:100%;accent-color:#c9d6ff}
+.file{display:block;text-align:center;cursor:pointer}.file input{display:none}
+.timer{font-size:clamp(54px,11vw,92px);font-weight:500;letter-spacing:-.06em;text-align:center;padding:22px 0;font-variant-numeric:tabular-nums}
+.c{justify-content:center}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translate(-50%,16px);opacity:0;background:rgba(245,245,247,.94);color:#0b0d14;padding:10px 16px;border-radius:12px;font-weight:600;font-size:13px;transition:.25s;z-index:200;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}
+footer{margin-top:28px;color:var(--mu);font-size:12px}
+@media(max-width:1050px){.s3,.s5,.s6,.s7{grid-column:span 6}}
+@media(max-width:720px){
+.app{display:block}.menu{display:inline-block}
+.sidebar{position:fixed;left:8px;top:8px;bottom:8px;width:260px;height:auto;margin:0;transform:translateX(-115%);visibility:hidden;transition:transform .3s,visibility .3s}
+.sidebar.open{transform:none;visibility:visible}
+main{padding:16px 14px 44px}.grid{gap:10px}.card{padding:16px}.big{font-size:28px}
+.s5,.s6,.s7{grid-column:span 12}.tl{grid-template-columns:1fr}.tools{grid-template-columns:1fr}.stage{height:62dvh;min-height:360px}
+.side{display:grid;grid-template-columns:1fr 1fr}.side .ctl:first-child{grid-column:span 2}}
+@media(max-width:400px){.s3{grid-column:span 12}.side{grid-template-columns:1fr}.side .ctl:first-child{grid-column:auto}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar glass" id="sidebar" aria-label="Navigasi utama">
+  <a class="brand" href="#" data-goto="dashboard"><i></i>Wearee</a>
+  <div class="search"><span class="ico" aria-hidden="true">⌕</span><input id="q" type="search" placeholder="Cari menu" aria-label="Cari menu" autocomplete="off"><kbd>Ctrl K</kbd></div>
+  <div><div class="grp">Ruang kerja</div>
+  <nav class="nav" id="nav">
+    <button data-page="dashboard"><span class="ico">◫</span><span class="lab">Ringkasan</span></button>
+    <button data-page="health"><span class="ico">♡</span><span class="lab">Kesehatan</span></button>
+    <button data-page="trace"><span class="ico">▧</span><span class="lab">Trace studio</span></button>
+    <button data-page="focus"><span class="ico">◷</span><span class="lab">Timer fokus</span></button>
+    <button data-page="habits"><span class="ico">✳</span><span class="lab">Kebiasaan</span></button>
+    <button data-page="notes"><span class="ico">⌁</span><span class="lab">Catatan harian</span></button>
+  </nav></div>
+  <div class="side-foot">Data tersimpan di browser ini.</div>
+</aside>
+<main>
+<header class="top">
+  <div><div class="crumb">Ruang kerja / <b id="crumb">Ringkasan</b></div><div class="crumb" id="todayDate" style="margin-top:2px"></div></div>
+  <div style="display:flex;gap:8px"><button class="pill menu" id="menuBtn" aria-label="Buka menu" aria-expanded="false">☰</button><button class="pill" id="todayBtn">Hari ini</button></div>
+</header>
+
+<section class="section active" id="dashboard">
+  <h1 id="monthTitle"></h1><p class="lead">Cek singkat dengan diri sendiri. Kemajuan, bukan kesempurnaan.</p>
+  <div class="grid">
+    <article class="card glass s3"><div class="ch"><span class="ct">Air minum</span><span class="cs">gelas</span></div><div class="big"><span data-b="water">0</span><small> / <span data-b="goal">8</span></small></div><div class="note" id="waterNote"></div><div class="bar"><span data-bar="water"></span></div><div class="row"><button class="btn primary" data-water="1">+ Gelas</button><button class="btn" data-water="-1" aria-label="Kurangi satu gelas">−</button></div></article>
+    <article class="card glass s3"><div class="ch"><span class="ct">Tidur semalam</span><span class="cs">jam</span></div><div class="big"><span data-b="sleep">—</span></div><div class="note">Catat di halaman Kesehatan.</div><div class="row"><button class="btn" data-goto="health">Catat tidur</button></div></article>
+    <article class="card glass s3"><div class="ch"><span class="ct">Suasana hati</span></div><div class="big" data-b="mood" style="font-size:24px">Belum diisi</div><div class="moods" style="margin-top:14px" data-moods></div></article>
+    <article class="card glass s3"><div class="ch"><span class="ct">Gerak</span><span class="cs">menit</span></div><div class="big"><span data-b="move">0</span><small> / 30</small></div><div class="note">Gerak apa pun dihitung.</div><div class="bar"><span data-bar="move"></span></div><div class="row"><button class="btn" data-goto="health">Catat gerak</button></div></article>
+    <article class="card glass s7"><div class="ch"><span class="ct">Tidur 7 hari terakhir</span><span class="cs" id="sleepAvg"></span></div><div class="chart" id="chart" role="img" aria-label="Grafik jam tidur 7 hari terakhir"></div></article>
+    <article class="card glass s5"><div class="ch"><span class="ct">Ritme hari ini</span><span class="cs" data-b="sum"></span></div><div class="checks" data-checks></div></article>
+    <article class="card glass s12"><div class="ch"><span class="ct">Alat cepat</span></div><div class="tools">
+      <button class="tool" data-goto="trace"><span class="ico">▧</span><span>Trace studio<small>Tahan gambar referensi</small></span></button>
+      <button class="tool" data-goto="focus"><span class="ico">◷</span><span>Timer fokus<small>Satu tugas sekali waktu</small></span></button>
+      <button class="tool" data-goto="notes"><span class="ico">⌁</span><span>Catatan harian<small>Simpan ide atau pengingat</small></span></button></div></article>
+  </div>
+</section>
+
+<section class="section" id="health">
+  <h2>Kesehatan</h2><p class="lead">Jurnal kebiasaan harian yang sederhana. Bukan diagnosis atau penilaian medis.</p>
+  <div class="grid">
+    <article class="card glass s6"><div class="ch"><span class="ct">Hidrasi</span></div><div class="big"><span data-b="water">0</span><small> gelas hari ini</small></div><label class="lb" for="goalIn">Target pengingat (gelas)</label><input class="field" type="number" id="goalIn" min="1" max="30"><div class="bar"><span data-bar="water"></span></div><div class="row"><button class="btn primary" data-water="1">+ Gelas</button><button class="btn" data-water="-1">− Kurangi</button></div></article>
+    <article class="card glass s6"><div class="ch"><span class="ct">Catatan tidur</span></div><div class="big"><span data-b="sleep">—</span><small> jam</small></div><label class="lb" for="sleepIn">Jam tidur semalam</label><input class="field" type="number" id="sleepIn" min="0" max="24" step=".5" placeholder="mis. 8"><div class="row"><button class="btn primary" id="saveSleep">Simpan tidur</button></div></article>
+    <article class="card glass s6"><div class="ch"><span class="ct">Suasana hati</span></div><div class="moods" data-moods></div><div class="note" id="moodCap">Tidak perlu merasa harus tertentu.</div></article>
+    <article class="card glass s6"><div class="ch"><span class="ct">Catatan gerak</span></div><div class="big"><span data-b="move">0</span><small> menit hari ini</small></div><label class="lb" for="moveIn">Tambah menit gerak</label><input class="field" type="number" id="moveIn" min="1" max="1440" placeholder="mis. 20"><div class="row"><button class="btn primary" id="addMove">Tambah</button><button class="btn danger" id="resetMove">Atur ulang</button></div></article>
+    <article class="card glass s12"><div class="ch"><span class="ct">Perawatan harian</span><span class="cs" data-b="sum"></span></div><div class="checks" data-checks></div></article>
+  </div>
+</section>
+
+<section class="section" id="trace">
+  <h2>Trace studio</h2><p class="lead">Unggah foto referensi, atur opacity, lalu buka layar penuh. Gambar sengaja tidak bisa digeser atau di-zoom. Letakkan perangkat dengan stabil.</p>
+  <div class="tl">
+    <div class="stage locked" id="stage">
+      <div class="ph"><b>Kanvas siap</b><span>Unggah gambar dari galeri, atur tampilannya, lalu aktifkan layar penuh.</span></div>
+      <img class="timg" id="timg" alt="Gambar referensi tracing" draggable="false">
+      <button class="btn xfull" id="xfull">Keluar layar penuh ✕</button>
+    </div>
+    <aside class="side">
+      <div class="ctl glass"><h3>Gambar</h3><label class="btn primary file">＋ Unggah gambar<input type="file" id="file" accept="image/*"></label><p>Diproses lokal di browser, tidak diunggah ke server.</p><button class="btn danger" id="rmImg" style="width:100%;margin-top:10px">Hapus gambar</button></div>
+      <div class="ctl glass"><h3>Tampilan</h3><label class="lb" for="op" style="margin-top:0">Opacity <span id="opT">100%</span></label><input id="op" type="range" min="10" max="100" value="100"><label class="lb" for="br">Kecerahan <span id="brT">100%</span></label><input id="br" type="range" min="40" max="160" value="100"><label class="lb" for="fit">Ukuran gambar</label><select class="field" id="fit"><option value="contain">Muat di layar</option><option value="cover">Penuhi layar (bisa terpotong)</option></select></div>
+      <div class="ctl glass"><h3>Mode tracing</h3><div class="row" style="margin:0"><button class="btn primary" id="lock" aria-pressed="true">Kunci: aktif</button><button class="btn" id="full">Layar penuh</button></div><p id="lockT"></p><div class="row"><button class="btn" id="rot">Putar 90°</button><button class="btn" id="rst">Atur ulang</button></div></div>
+      <div class="ctl glass"><h3>Tips</h3><p>Matikan rotasi otomatis bila perlu. Jika memakai kertas di atas layar, pastikan perangkat aman untuk itu dan jangan menekan terlalu keras.</p></div>
+    </aside>
+  </div>
+</section>
+
+<section class="section" id="focus">
+  <h2>Timer fokus</h2><p class="lead">Sesi singkat untuk belajar, membaca, menggambar, atau menyelesaikan satu tugas.</p>
+  <div class="grid">
+    <article class="card glass s7"><div class="ch"><span class="ct">Sesi</span><span class="cs" id="tMode"></span></div><div class="timer" id="tDisp" role="timer">25:00</div><div class="row c"><button class="btn primary" id="tStart">Mulai sesi</button><button class="btn" id="tReset">Atur ulang</button></div><div class="row c"><button class="btn mode" data-min="25" data-name="Fokus">Fokus 25 mnt</button><button class="btn mode" data-min="5" data-name="Istirahat pendek">Istirahat 5 mnt</button><button class="btn mode" data-min="15" data-name="Istirahat panjang">Istirahat 15 mnt</button></div></article>
+    <article class="card glass s5"><div class="ch"><span class="ct">Niat sesi</span></div><label class="lb" for="task" style="margin-top:0">Apa yang ingin kamu kerjakan?</label><input class="field" id="task" placeholder="mis. Selesaikan sketsa"><p class="note" style="font-family:var(--sans);line-height:1.7">Pilih satu tugas yang realistis. Berhenti atau istirahat kapan pun perlu.</p><div class="note" id="fStat" style="color:var(--ac)" aria-live="polite">Siap kapan pun kamu siap.</div></article>
+  </div>
+</section>
+
+<section class="section" id="habits">
+  <h2>Kebiasaan</h2><p class="lead">Daftar kebiasaan kecil yang ingin dipantau. Centang saat sudah dilakukan hari ini.</p>
+  <div class="grid">
+    <article class="card glass s7"><div class="ch"><span class="ct">Kebiasaan hari ini</span><span class="cs" id="hCount"></span></div><div class="checks" id="hList"></div></article>
+    <article class="card glass s5"><div class="ch"><span class="ct">Tambah kebiasaan</span></div><form id="hForm" style="display:flex;gap:8px"><input class="field" id="hIn" maxlength="55" placeholder="mis. Baca 10 halaman" aria-label="Nama kebiasaan" required><button class="btn primary" type="submit">Tambah</button></form><p class="note" style="font-family:var(--sans);line-height:1.7">Mulai dari yang sederhana. Hapus yang tidak lagi relevan.</p></article>
+  </div>
+</section>
+
+<section class="section" id="notes">
+  <h2>Catatan harian</h2><p class="lead">Ruang untuk ide atau hal yang ingin diingat. Catatan tiap hari tersimpan di browser ini.</p>
+  <div class="grid">
+    <article class="card glass s7"><div class="ch"><span class="ct">Halaman hari ini</span><span class="cs" id="noteDate"></span></div><textarea class="field" id="note" rows="9" style="resize:vertical;line-height:1.8" placeholder="Tulis sesuatu yang layak diingat..." aria-label="Catatan hari ini"></textarea><div class="row" style="align-items:center"><button class="btn primary" id="saveNote">Simpan</button><button class="btn" id="clearNote">Hapus isi</button><span class="note" id="noteSt" style="margin:0" aria-live="polite">Simpan otomatis aktif.</span></div></article>
+    <article class="card glass s5"><div class="ch"><span class="ct">Pengingat kecil</span></div><div style="font-size:22px;line-height:1.35;letter-spacing:-.03em;margin:6px 0 12px">Kamu tidak harus menyelesaikan semuanya hari ini.</div><p class="note" style="font-family:var(--sans);line-height:1.7">Satu langkah kecil tetap kemajuan. Sisakan ruang untuk istirahat.</p></article>
+  </div>
+</section>
+<footer>Data tetap di browser ini.</footer>
+</main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+"use strict";
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const KEY="wearee-dashboard-v2",G_MOVE=30;
+const MOODS={"😄":"Senang","🙂":"Baik","😐":"Biasa","😕":"Kurang baik","😴":"Lelah"};
+const CHECKS=[["water","Minum air sepanjang hari"],["break","Istirahat dari layar"],["move","Bergerak dengan nyaman"],["rest","Sisihkan waktu untuk istirahat"]];
+const uid=()=>Math.random().toString(36).slice(2,8)+Date.now().toString(36);
+const dkey=(d=new Date())=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+let S={},cur=dkey(),warned=false,tt;
+try{S=JSON.parse(localStorage.getItem(KEY))||{}}catch{S={}}
+if(typeof S!=="object")S={};
+S.days=S.days||{};S.goal=S.goal||8;
+S.habits=Array.isArray(S.habits)?S.habits:["Baca sesuatu","Istirahat dari layar","Siapkan hari esok"].map(t=>({id:uid(),t}));
+function day(k=cur){return S.days[k]||(S.days[k]={water:0,sleep:"",move:0,mood:"",checks:{},hc:{},note:""})}
+function save(){
+  const ks=Object.keys(S.days).sort();while(ks.length>45)delete S.days[ks.shift()];
+  try{localStorage.setItem(KEY,JSON.stringify(S))}catch{if(!warned){warned=true;toast("Penyimpanan browser tidak tersedia. Data tidak akan tersimpan.")}}
+}
+function toast(m){const e=$("#toast");e.textContent=m;e.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("show"),2200)}
+const fmt=(o,d=new Date())=>d.toLocaleDateString("id-ID",o);
+function dates(){const d=new Date();$("#todayDate").textContent=fmt({weekday:"long",day:"numeric",month:"long",year:"numeric"});$("#noteDate").textContent=fmt({day:"numeric",month:"long",year:"numeric"});$("#monthTitle").innerHTML=fmt({month:"long"})+" <span>"+d.getFullYear()+"</span>"}
+
+/* Render */
+function setVal(el,v){if(document.activeElement!==el)el.value=v}
+function render(){
+  const d=day(),done=CHECKS.filter(([k])=>d.checks[k]).length;
+  const v={water:d.water,goal:S.goal,sleep:d.sleep===""?"—":d.sleep,move:d.move,mood:d.mood||"Belum diisi",sum:done+" dari "+CHECKS.length};
+  $$("[data-b]").forEach(e=>e.textContent=v[e.dataset.b]);
+  $$("[data-bar=water]").forEach(e=>e.style.width=Math.min(100,d.water/S.goal*100)+"%");
+  $$("[data-bar=move]").forEach(e=>e.style.width=Math.min(100,d.move/G_MOVE*100)+"%");
+  setVal($("#goalIn"),S.goal);setVal($("#sleepIn"),d.sleep);
+  $("#moodCap").textContent=d.mood?"Hari ini: "+d.mood+" "+MOODS[d.mood]:"Tidak perlu merasa harus tertentu.";
+  $$(".mood").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mood===d.mood));
+  $$("[data-checks] input").forEach(c=>{c.checked=!!d.checks[c.dataset.k];c.closest(".ck").classList.toggle("done",c.checked)});
+  const y=S.days[dkey(new Date(Date.now()-864e5))],wn=$("#waterNote");
+  if(y&&y.water>0){const diff=d.water-y.water;wn.innerHTML=(diff>=0?'<span class="up">+':'<span class="down">')+diff+"</span> vs kemarin"}else wn.textContent="Target "+S.goal+" gelas";
+  chart();
+}
+function chart(){
+  const c=$("#chart");c.innerHTML="";let sum=0,n=0;
+  for(let i=6;i>=0;i--){
+    const dt=new Date(Date.now()-i*864e5),e=S.days[dkey(dt)],s=e&&e.sleep!==""?Number(e.sleep):null;
+    if(s!==null){sum+=s;n++}
+    const col=document.createElement("div"),bar=document.createElement("i");
+    col.className=(i===0?"today ":"")+(s===null?"none":"");
+    bar.style.height=s===null?"4px":Math.max(4,Math.min(100,s/10*100))+"%";
+    col.title=fmt({weekday:"long"},dt)+": "+(s===null?"belum dicatat":s+" jam");
+    col.append(bar,document.createTextNode(fmt({weekday:"short"},dt)));c.append(col);
+  }
+  $("#sleepAvg").textContent=n?"rata-rata "+(sum/n).toFixed(1)+" jam":"belum ada data";
+}
+function initChecks(){
+  $$("[data-checks]").forEach(box=>CHECKS.forEach(([k,t])=>{
+    const r=document.createElement("div"),l=document.createElement("label"),c=document.createElement("input"),s=document.createElement("span");
+    r.className="ck";c.type="checkbox";c.dataset.k=k;s.textContent=t;
+    c.addEventListener("change",()=>{day().checks[k]=c.checked;save();render()});
+    l.append(c,s);r.append(l);box.append(r);
+  }));
+  $$("[data-moods]").forEach(box=>Object.entries(MOODS).forEach(([e,n])=>{
+    const b=document.createElement("button");b.className="mood";b.dataset.mood=e;b.textContent=e;b.title=n;b.setAttribute("aria-label",n);b.setAttribute("aria-pressed","false");
+    b.addEventListener("click",()=>{day().mood=e;save();render();toast("Suasana hati disimpan")});box.append(b);
+  }));
+}
+
+/* Kesehatan */
+$$("[data-water]").forEach(b=>b.addEventListener("click",()=>{const d=day();d.water=Math.max(0,Math.min(99,d.water+Number(b.dataset.water)));save();render()}));
+$("#goalIn").addEventListener("change",e=>{S.goal=Math.max(1,Math.min(30,Math.round(Number(e.target.value))||8));save();render()});
+$("#saveSleep").addEventListener("click",()=>{const i=$("#sleepIn"),v=Number(i.value);if(i.value===""||v<0||v>24){toast("Masukkan durasi tidur yang valid");return}day().sleep=v;save();render();toast("Tidur disimpan")});
+$("#addMove").addEventListener("click",()=>{const i=$("#moveIn"),v=Number(i.value);if(i.value===""||v<=0||v>1440){toast("Masukkan menit yang valid");return}const d=day();d.move=Math.min(1440,d.move+Math.round(v));i.value="";save();render();toast("Gerak ditambahkan")});
+$("#resetMove").addEventListener("click",()=>{day().move=0;save();render()});
+
+/* Navigasi */
+function show(p){
+  $$(".section").forEach(s=>s.classList.toggle("active",s.id===p));
+  $$("#nav button").forEach(b=>{const on=b.dataset.page===p;if(on){b.setAttribute("aria-current","page");$("#crumb").textContent=b.querySelector(".lab").textContent}else b.removeAttribute("aria-current")});
+  closeMenu();scrollTo({top:0});
+}
+function closeMenu(){$("#sidebar").classList.remove("open");$("#menuBtn").setAttribute("aria-expanded","false")}
+$$("#nav button").forEach(b=>b.addEventListener("click",()=>show(b.dataset.page)));
+$$("[data-goto]").forEach(b=>b.addEventListener("click",e=>{e.preventDefault();show(b.dataset.goto)}));
+$("#todayBtn").addEventListener("click",()=>show("dashboard"));
+$("#menuBtn").addEventListener("click",()=>{const o=$("#sidebar").classList.toggle("open");$("#menuBtn").setAttribute("aria-expanded",o)});
+document.addEventListener("click",e=>{if(innerWidth<=720&&!$("#sidebar").contains(e.target)&&e.target!==$("#menuBtn"))closeMenu()});
+$("#q").addEventListener("input",e=>{const t=e.target.value.trim().toLowerCase();$$("#nav button").forEach(b=>b.style.display=b.textContent.toLowerCase().includes(t)?"":"none")});
+$("#q").addEventListener("keydown",e=>{if(e.key==="Enter"){const b=$$("#nav button").find(x=>x.style.display!=="none");if(b){b.click();e.target.value="";e.target.dispatchEvent(new Event("input"))}}if(e.key==="Escape"){e.target.value="";e.target.dispatchEvent(new Event("input"));e.target.blur()}});
+document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();$("#sidebar").classList.add("open");$("#q").focus()}});
+
+/* Trace studio */
+let url=null,rot=0,locked=true;
+const stage=$("#stage"),img=$("#timg");
+function trace(){
+  img.style.opacity=$("#op").value/100;img.style.filter="brightness("+$("#br").value+"%)";img.style.objectFit=$("#fit").value;
+  const sw=rot%180!==0,w=stage.clientWidth,h=stage.clientHeight;
+  img.style.width=(sw?h:w)+"px";img.style.height=(sw?w:h)+"px";
+  img.style.transform="translate(-50%,-50%) rotate("+rot+"deg)";
+  $("#opT").textContent=$("#op").value+"%";$("#brT").textContent=$("#br").value+"%";
+}
+function lockUI(){
+  stage.classList.toggle("locked",locked);
+  const b=$("#lock");b.textContent=locked?"Kunci: aktif":"Kunci: mati";b.setAttribute("aria-pressed",locked);b.classList.toggle("primary",locked);
+  $("#lockT").textContent=locked?"Terkunci: gambar tidak bisa digeser, dicubit, atau di-zoom, dan layar tidak ikut tergulir saat menyentuh kanvas.":"Kunci mati: kanvas ikut tergulir bersama halaman. Gambar tetap tidak bisa digeser atau di-zoom.";
+}
+$("#file").addEventListener("change",e=>{
+  const f=e.target.files&&e.target.files[0];if(!f)return;
+  if(!f.type.startsWith("image/")){toast("Pilih file gambar");return}
+  if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(f);rot=0;img.src=url;stage.classList.add("loaded");trace();toast("Gambar dimuat");
+});
+["op","br","fit"].forEach(id=>$("#"+id).addEventListener("input",trace));
+$("#rot").addEventListener("click",()=>{rot=(rot+90)%360;trace()});
+$("#rst").addEventListener("click",()=>{$("#op").value=100;$("#br").value=100;$("#fit").value="contain";rot=0;trace()});
+$("#rmImg").addEventListener("click",()=>{if(url)URL.revokeObjectURL(url);url=null;img.removeAttribute("src");stage.classList.remove("loaded");$("#file").value="";toast("Gambar dihapus")});
+$("#lock").addEventListener("click",()=>{locked=!locked;lockUI()});
+function exitFull(){stage.classList.remove("full");if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});requestAnimationFrame(trace)}
+$("#full").addEventListener("click",async()=>{
+  if(!stage.classList.contains("loaded")){toast("Unggah gambar dulu");return}
+  stage.classList.add("full");try{if(stage.requestFullscreen)await stage.requestFullscreen()}catch{}requestAnimationFrame(trace);
+});
+$("#xfull").addEventListener("click",exitFull);
+document.addEventListener("fullscreenchange",()=>{if(!document.fullscreenElement&&stage.classList.contains("full"))exitFull()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&stage.classList.contains("full"))exitFull()});
+addEventListener("resize",trace);
+["gesturestart","gesturechange","gestureend"].forEach(n=>stage.addEventListener(n,e=>e.preventDefault(),{passive:false}));
+stage.addEventListener("touchmove",e=>{if(locked||stage.classList.contains("full")||e.touches.length>1)e.preventDefault()},{passive:false});
+stage.addEventListener("wheel",e=>{if(e.ctrlKey||locked||stage.classList.contains("full"))e.preventDefault()},{passive:false});
+stage.addEventListener("contextmenu",e=>e.preventDefault());
+
+/* Timer fokus (berbasis waktu nyata, tidak melambat saat layar mati) */
+let mode={name:"Fokus",min:25},left=1500,endAt=0,tick=null;
+const remain=()=>Math.max(0,Math.round((endAt-Date.now())/1000));
+function tRender(){const m=Math.floor(left/60),s=left%60;$("#tDisp").textContent=String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");$("#tMode").textContent=mode.name+" / "+mode.min+" mnt"}
+function tStop(){clearInterval(tick);tick=null;$("#tStart").textContent="Mulai sesi"}
+function tUpdate(){
+  left=remain();tRender();
+  if(left<=0){tStop();$("#fStat").textContent="Sesi selesai. Ambil waktu sejenak untuk menyegarkan diri.";toast("Sesi selesai");if(navigator.vibrate)navigator.vibrate([150,80,150])}
+}
+$("#tStart").addEventListener("click",()=>{
+  if(tick){left=remain();tStop();tRender();$("#fStat").textContent="Dijeda.";return}
+  if(left<=0)left=mode.min*60;
+  endAt=Date.now()+left*1000;$("#tStart").textContent="Jeda";
+  const t=$("#task").value.trim();$("#fStat").textContent=t?"Mengerjakan: "+t:"Sesi berjalan.";
+  tick=setInterval(tUpdate,250);tUpdate();
+});
+$("#tReset").addEventListener("click",()=>{tStop();left=mode.min*60;tRender();$("#fStat").textContent="Siap kapan pun kamu siap."});
+$$(".mode").forEach(b=>b.addEventListener("click",()=>{tStop();mode={name:b.dataset.name,min:Number(b.dataset.min)};left=mode.min*60;tRender();$("#fStat").textContent="Siap kapan pun kamu siap."}));
+
+/* Kebiasaan (berdasarkan id, bukan indeks) */
+function habits(){
+  const l=$("#hList");l.innerHTML="";const hc=day().hc;
+  S.habits.forEach(h=>{
+    const r=document.createElement("div"),lb=document.createElement("label"),c=document.createElement("input"),s=document.createElement("span"),x=document.createElement("button");
+    r.className="ck"+(hc[h.id]?" done":"");c.type="checkbox";c.checked=!!hc[h.id];s.textContent=h.t;
+    c.addEventListener("change",()=>{hc[h.id]=c.checked;save();habits()});
+    x.type="button";x.className="btn danger";x.textContent="×";x.setAttribute("aria-label","Hapus kebiasaan "+h.t);
+    x.addEventListener("click",()=>{S.habits=S.habits.filter(z=>z.id!==h.id);save();habits()});
+    lb.append(c,s);r.append(lb,x);l.append(r);
+  });
+  $("#hCount").textContent=S.habits.filter(h=>hc[h.id]).length+" / "+S.habits.length+" selesai";
+  if(!S.habits.length)l.innerHTML='<div class="note">Belum ada kebiasaan. Tambahkan satu di sebelah.</div>';
+}
+$("#hForm").addEventListener("submit",e=>{e.preventDefault();const v=$("#hIn").value.trim();if(!v)return;S.habits.push({id:uid(),t:v});$("#hIn").value="";save();habits();toast("Kebiasaan ditambahkan")});
+
+/* Catatan */
+let nt;
+const noteSet=m=>{$("#noteSt").textContent=m;clearTimeout(nt);nt=setTimeout(()=>$("#noteSt").textContent="Simpan otomatis aktif.",1400)};
+$("#note").addEventListener("input",()=>{day().note=$("#note").value;save();noteSet("Tersimpan.")});
+$("#saveNote").addEventListener("click",()=>{day().note=$("#note").value;save();noteSet("Tersimpan.");toast("Catatan disimpan")});
+$("#clearNote").addEventListener("click",()=>{if(confirm("Hapus isi catatan hari ini?")){$("#note").value="";day().note="";save();noteSet("Catatan dihapus.")}});
+
+/* Pergantian hari saat halaman terbuka */
+function rollover(){if(dkey()!==cur){cur=dkey();dates();$("#note").value=day().note;render();habits()}}
+setInterval(rollover,30000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)rollover()});
+
+initChecks();dates();$("#note").value=day().note||"";render();habits();tRender();lockUI();
+const first=$("#nav button");first.setAttribute("aria-current","page");
+</script>
+</body>
+</html>
